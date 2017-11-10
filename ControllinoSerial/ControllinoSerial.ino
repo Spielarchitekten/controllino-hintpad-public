@@ -27,10 +27,11 @@
   - v1.1: support for additional input pins on MAXI/MEGA
   - v1.2.1: reports signals using IDs that are printed on the device
   - v1.2.2: button debounce fix
-  
+  - v1.2.3: specified missing pin error message, added support for D20-D23 on MEGA
+
 */
 
-String currentVersion = "1.2.2";
+String currentVersion = "1.2.3";
 
 #include <Controllino.h>
 
@@ -39,7 +40,7 @@ String currentVersion = "1.2.2";
 // 1 = MINI
 // 2 = MAXI
 // 3 = MEGA
-#define CMODL 2
+#define CMODL 3
 // ****************************** //
 
 #if CMODL == 1
@@ -79,10 +80,10 @@ boolean isSent[12]; // sent flags
 #elif CMODL == 3
 // MEGA
 // outputs
-const int iocount1 = 20;
+const int iocount1 = 24;
 const int iocount2 = 16;
 const int iocount3 = 21;
-int outputD[] = {2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 42, 43, 44, 45, 46, 47, 48, 49};
+int outputD[] = {2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 42, 43, 44, 45, 46, 47, 48, 49, 120,121,122,123};
 int outputR[] = {22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37};
 // inputs
 int inputA[] = {CONTROLLINO_A0, CONTROLLINO_A1, CONTROLLINO_A2, CONTROLLINO_A3, CONTROLLINO_A4,
@@ -96,10 +97,19 @@ int oldInputVal[iocount3]; // old input values for debouncing
 boolean isSent[iocount3]; // sent flags
 #endif
 
+
+// PORT MANIPULATION FOR MEGA D20-D23 *
+// in order to use the non-arduino pins D20-D23 on the MEGA
+// we need to manipulate the register ports directly
+int MEGA_PINS_20_23 = B01110000; // DDRD
+int MEGA_PINS_24 = B00010000;    // DDRJ
+// * PORT MANIPULATION FOR MEGA D20-D23
+
+
 // button de-bounce
 int long debounceMS [iocount3]; // stores the current millis()-values for each input
 int doDebounce [iocount3]; // button input debounce flags
-const int debounceTime = 150; // in ms
+const int debounceTime = 250; // in ms
 
 #include "swfunc.h"
 #include "listenerfunc.h"
@@ -110,16 +120,16 @@ void setup() {
     ; // wait for serial port
   }
 
-  // welcome message
-  Serial.println("CONTROLLINO SERIAL READY!");
-  Serial.println ("Ver. " + currentVersion);
-  Serial.println ("Built on " __DATE__ " at " __TIME__);
-  Serial.print ("Controllino model #"); Serial.println ( CMODL );
-  Serial.println("----------------");
-  Serial.print ("Digital Pins: "); Serial.println ( iocount1 );
-  Serial.print ("Relay Pins: "); Serial.println ( iocount2 );
-  Serial.print ("Input Pins: "); Serial.println ( iocount3 );
-  Serial.println("----------------");
+  // Welcome message - DO NOT EDIT THIS!
+  Serial.println  ("CONTROLLINO SERIAL READY!");
+  Serial.println  ("Ver. " + currentVersion);
+  Serial.println  ("Built on " __DATE__ " at " __TIME__);
+  Serial.print    ("Controllino model #");  Serial.println ( CMODL );
+  Serial.println  ("----------------");
+  Serial.print    ("Digital Pins: ");       Serial.println ( iocount1 );
+  Serial.print    ("Relay Pins: ");         Serial.println ( iocount2 );
+  Serial.print    ("Input Pins: ");         Serial.println ( iocount3 );
+  Serial.println  ("----------------");
 
   for (int i = 0; i < iocount3; i++) {
     pinMode (inputA[i], INPUT);
@@ -130,6 +140,11 @@ void setup() {
   for (int j = 0; j < iocount1; j++) {
     pinMode (outputD[j], OUTPUT);
   }
+
+// PORT MANIPULATION FOR MEGA D20-D23
+  DDRD = DDRD | MEGA_PINS_20_23;  // set up pins 47 (D20), 48(D21), 49(D22) on PORTD
+  DDRJ = DDRJ | MEGA_PINS_24;     // set up pin 67 (D23) on PORTJ
+  
 }
 
 void loop() {
