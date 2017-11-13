@@ -9,13 +9,14 @@ void turnDR ( int thePin, int newValue, int outputType, int posInArray) {
   String serString; // string that will be sent via serial
   // compose serial string
   if (outputType == 1) {
-
-    if (posInArray < 20) {
+    
       serString = "[D";
       serString += posInArray;
       serString += ",";
       serString += newValue;
       serString += "]";
+      
+    if (posInArray < 20) {
       digitalWrite(outputD[posInArray], newValue); // switch the pin
     } else {
 

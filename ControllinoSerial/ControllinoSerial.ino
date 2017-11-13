@@ -27,11 +27,12 @@
   - v1.1: support for additional input pins on MAXI/MEGA
   - v1.2.1: reports signals using IDs that are printed on the device
   - v1.2.2: button debounce fix
-  - v1.2.3: specified missing pin error message, added support for D20-D23 on MEGA
-
+  - v1.2.3: - specified missing pin error message
+            - added support for D20-D23 outputs on MEGA
+  - v1.2.4: - small fix for reporting D20-D23 action back to Hintpad
 */
 
-String currentVersion = "1.2.3";
+String currentVersion = "1.2.4";
 
 #include <Controllino.h>
 
