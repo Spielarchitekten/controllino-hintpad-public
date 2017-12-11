@@ -9,17 +9,27 @@
 
   Controllino PinOut sheets: https://controllino.biz/downloads/
 
-  usage:
+  USAGE:
   send integers enclosed by < and > chars via serial port
   <pin, value>
-  pin        the pin you want to switch
+  pin        the pin (native Arduino Mega) you want to switch
   value      0 = off, 1 = on
 
-  NOTE:
+  - NOTES -
+  MINI & A4/A5:
   on the MINI analog inputs A4 and A5 are analog only!
   In order to work with Hintpad the values have to be digital,
   so A4 and A5 are mapped to digital values (see listenerfunc.h)
 
+  DEBOUNCE TIME:
+  The button debouncer prevents fluctuating inputs and waits 
+  for a stable signal before reporting it to Hintpad.
+  Choose a reasonable debounce time! Due to the nature of serial communication 
+  (only one way at a time, bit by bit) we need to be carefol not to 'spam' the 
+  serial port in one or the other direction, i.e. give each machine enough time to 
+  generate and send the answer to a request.
+
+  I/O INFO:
   Prints i/o info to serial monitor enclosed in square brackets:
   [pin, value]
 
@@ -30,9 +40,11 @@
   - v1.2.3: - specified missing pin error message
             - added support for D20-D23 outputs on MEGA
   - v1.2.4: - small fix for reporting D20-D23 action back to Hintpad
+  - v1.2.5: - exclude MINI from reporting D20-D23
+  - v1.2.6: - report input pins on startup
 */
 
-String currentVersion = "1.2.4";
+String currentVersion = "1.2.6";
 
 #include <Controllino.h>
 
@@ -41,7 +53,7 @@ String currentVersion = "1.2.4";
 // 1 = MINI
 // 2 = MAXI
 // 3 = MEGA
-#define CMODL 3
+#define CMODL 1
 // ****************************** //
 
 #if CMODL == 1
@@ -142,9 +154,13 @@ void setup() {
     pinMode (outputD[j], OUTPUT);
   }
 
+#if CMODL != 1  
 // PORT MANIPULATION FOR MEGA D20-D23
   DDRD = DDRD | MEGA_PINS_20_23;  // set up pins 47 (D20), 48(D21), 49(D22) on PORTD
   DDRJ = DDRJ | MEGA_PINS_24;     // set up pin 67 (D23) on PORTJ
+#endif
+
+reportInputs(); // reporting input pin states on startup once
   
 }
 

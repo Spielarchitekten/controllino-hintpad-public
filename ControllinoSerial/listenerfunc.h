@@ -106,6 +106,25 @@ void listenPins () {
   // listen for inputs on A0 - AX and send event string via serial
   for (int i = 0; i < iocount3; i++) {
     String serString;
+    if (CMODL == 1) { // MINI
+      if (i == 6) serString = "[IN0";
+      if (i == 7) serString = "[IN1";
+    }
+    
+    if (CMODL == 2) { // MAXI
+      if (i == 10) serString = "[IN0";     
+      if (i == 11) serString = "[IN1";
+    }
+
+    if (CMODL == 3) { // MEGA
+      if (i >= 16 && i <= 18) {
+        serString = "[I";
+        serString += i;
+      }
+      if (i == 19) serString = "[IN0";
+      if (i == 20) serString = "[IN1";
+    }
+    
     inputVal[i] = digitalRead(inputA[i]);
 
     // ANALOG INPUT MAPPING
@@ -133,48 +152,9 @@ void listenPins () {
         debounceMS[i] = millis();
         doDebounce[i] = false;
         isSent[i] = true;
-
-        serString = "[A"; // default
-        serString += i;   // default
-
-        // MINI
-        if (CMODL == 1) {
-          if (i == 6) {
-            serString = "[IN0";
-          }
-          if (i == 7) {
-            serString = "[IN1";
-          }
-        }
-
-        // MAXI
-        if (CMODL == 2) {
-          if (i == 10) {
-            serString = "[IN0";
-          }
-          if (i == 11) {
-            serString = "[IN1";
-          }
-        }
-
-        // MEGA
-        if (CMODL == 3) {
-          if (i >= 16 && i <= 18) {
-            serString = "[I";
-            serString += i;
-          }
-          if (i == 19) {
-            serString = "[IN0";
-          }
-          if (i == 20) {
-            serString = "[IN1";
-          }
-        }
-
         serString += ",1]";
         Serial.println(serString); // REPORT via serial
         btnCounter += 1;
-
       }
     } else if (inputVal[i] == LOW && isSent[i] == true) {
       if (doDebounce[i] == false) {
@@ -185,44 +165,6 @@ void listenPins () {
         isSent[i] = false;
         debounceMS[i] = millis();
         doDebounce[i] = false;
-
-        serString = "[A"; // default
-        serString += i;   // default
-
-        // MINI
-        if (CMODL == 1) {
-          if (i == 6) {
-            serString = "[IN0";
-          }
-          if (i == 7) {
-            serString = "[IN1";
-          }
-        }
-
-        // MAXI
-        if (CMODL == 2) {
-          if (i == 10) {
-            serString = "[IN0";
-          }
-          if (i == 11) {
-            serString = "[IN1";
-          }
-        }
-
-        // MEGA
-        if (CMODL == 3) {
-          if (i >= 16 && i <= 18) {
-            serString = "[I";
-            serString += i;
-          }
-          if (i == 19) {
-            serString = "[IN0";
-          }
-          if (i == 20) {
-            serString = "[IN1";
-          }
-        }
-
         serString += ",0]";
         Serial.println(serString); // REPORT via serial
       }
@@ -232,3 +174,41 @@ void listenPins () {
     }
   }
 }
+
+void reportInputs() {
+  for (int i = 0; i < iocount2; i++) {
+    inputVal[i] = digitalRead(inputA[i]);
+    String serString;
+    serString = "[A"; // default
+    serString += i;   // default
+
+    if (CMODL == 1) { // MINI
+      if (i == 6) serString = "[IN0";
+      if (i == 7) serString = "[IN1";
+    }
+
+    if (CMODL == 2) { // MAXI
+      if (i == 10) serString = "[IN0";
+      if (i == 11) serString = "[IN1";
+    }
+
+    if (CMODL == 3) { // MEGA
+      if (i >= 16 && i <= 18) {
+        serString = "[I";
+        serString += i;
+      }
+      if (i == 19) serString = "[IN0";
+      if (i == 20) serString = "[IN1";
+    }
+
+    if (inputVal[i] == HIGH ) {
+      // report HIGH
+      serString += "1]";
+    } else {
+      // report LOW
+      serString += "0]";
+    }
+    Serial.println (serString);
+  }
+}
+

@@ -39,11 +39,14 @@ void turnDR ( int thePin, int newValue, int outputType, int posInArray) {
           PORTD = PORTD & B10111111;
         }
       } else if (posInArray == 23) {
-        if (newValue == 1) {
+       
+#if CMODL != 1        
+        if (newValue == 1 && CMODL != 1) {
           PORTJ = PORTJ | B00010000;
         } else {
           PORTJ = PORTJ & B11101111;
         }
+#endif
       }
     }
 
