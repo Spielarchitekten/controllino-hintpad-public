@@ -3,7 +3,7 @@ Controllino MINI/MAXI/MEGA sketch for Hintpad-I/O via serial com (USB) port
 
 ## Setup
 - Install Arduino IDE https://www.arduino.cc/en/main/software 
-- or Atom with PlatformIO plugin http://docs.platformio.org/en/latest/ide/atom.html
+- OR Atom with PlatformIO plugin http://docs.platformio.org/en/latest/ide/atom.html
 - follow the steps to install the Controllino library and hardware definitions https://github.com/CONTROLLINO-PLC/CONTROLLINO_Library#installation-guide
 - connect Controllino and set up board type and serial port in Board Manager
 - download or clone this repository and open controllino-serial sketch
@@ -11,7 +11,7 @@ Controllino MINI/MAXI/MEGA sketch for Hintpad-I/O via serial com (USB) port
 - compile and upload
 
 ## Using Controllino Inputs
-As for now you can use all inputs as digital inputs only, i.e. if you want to use analog sensors you will need another microcontroller to process analog signals and report a HIGH signal to a Controllino input pin when the puzzle is solved. 
+As for now you can use all input pins as _digital inputs only_, i.e. if you want to use analog sensors you will need another microcontroller to process analog signals and report a HIGH signal to a Controllino input pin when the puzzle is solved - or if you want to use the pins as outputs, you will need to edit this sketch to your liking. But keep in mind that Hintpad does not support input pins as outputs, yet!
 
 ### Logic Voltage Levels
 Logic switching levels depend on the supply voltage of the Controllino!
