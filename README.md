@@ -10,8 +10,8 @@ Controllino MINI/MAXI/MEGA sketch for Hintpad-I/O via serial com (USB) port
 - set up Controllino model in sketch (1 = MINI, 2 = MAXI, 3 = MEGA) - example: #define CMODL 2
 - compile and upload
 
-## Using Controllino Inputs
-As for now you can use all input pins as _digital inputs only_, i.e. if you want to use analog sensors you will need another microcontroller to process analog signals and report a HIGH signal to a Controllino input pin when the puzzle is solved - or if you want to use the pins as outputs, you will need to edit this sketch to your liking. But keep in mind that Hintpad does not support input pins as outputs, yet!
+## Using Controllino Input pins
+As for now you can use all input pins as _digital inputs_ only, i.e. if you want to use analog sensors you will need another microcontroller to process analog signals and report a HIGH signal to a Controllino input pin when the puzzle is solved OR if you want to use the pins as outputs, you will need to edit this sketch to your liking. But keep in mind that Hintpad does not support input pins as outputs!
 
 ### Logic Voltage Levels
 Logic switching levels depend on the supply voltage of the Controllino!
