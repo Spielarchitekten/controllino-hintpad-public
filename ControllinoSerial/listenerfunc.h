@@ -179,7 +179,7 @@ void listenPins () {
 }
 
 void reportInputs() {
-  for (int i = 0; i < iocount2; i++) {
+  for (int i = 0; i < iocount3; i++) {
     inputVal[i] = digitalRead(inputA[i]);
     String serString;
     serString = "[A"; // default

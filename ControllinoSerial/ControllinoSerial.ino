@@ -54,7 +54,7 @@ String currentVersion = "1.2.6";
 // 1 = MINI
 // 2 = MAXI
 // 3 = MEGA
-#define CMODL 3
+#define CMODL 2
 // ****************************** //
 
 #if CMODL == 1
