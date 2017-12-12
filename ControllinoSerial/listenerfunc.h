@@ -106,6 +106,9 @@ void listenPins () {
   // listen for inputs on A0 - AX and send event string via serial
   for (int i = 0; i < iocount3; i++) {
     String serString;
+    serString = "[A"; // default
+    serString += i;   // default
+    
     if (CMODL == 1) { // MINI
       if (i == 6) serString = "[IN0";
       if (i == 7) serString = "[IN1";
@@ -203,10 +206,10 @@ void reportInputs() {
 
     if (inputVal[i] == HIGH ) {
       // report HIGH
-      serString += "1]";
+      serString += ",1]";
     } else {
       // report LOW
-      serString += "0]";
+      serString += ",0]";
     }
     Serial.println (serString);
   }
