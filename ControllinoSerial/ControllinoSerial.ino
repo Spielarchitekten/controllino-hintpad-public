@@ -33,6 +33,10 @@
   Prints i/o info to serial monitor enclosed in square brackets:
   [pin, value]
 
+  INPUT PIN REPORT:
+  Sends current states of all input pins via serial connection.
+  usage: send "<999>" OR "<RESET CONTROLLINO>" via serial in order to report input pin states
+
   latest changes:
   - v1.1: support for additional input pins on MAXI/MEGA
   - v1.2.1: reports signals using IDs that are printed on the device
@@ -43,9 +47,10 @@
   - v1.2.5: - exclude MINI from reporting D20-D23
   - v1.2.6: - report input pins on startup
             - code cleanup
+  - v1.2.7: - added 'report input' function
 */
 
-String currentVersion = "1.2.6";
+String currentVersion = "1.2.7";
 
 #include <Controllino.h>
 
@@ -54,7 +59,7 @@ String currentVersion = "1.2.6";
 // 1 = MINI
 // 2 = MAXI
 // 3 = MEGA
-#define CMODL 2
+#define CMODL 3
 // ****************************** //
 
 #if CMODL == 1
@@ -162,11 +167,10 @@ void setup() {
 #endif
 
 reportInputs(); // reporting input pin states on startup once
-  
+
 }
 
 void loop() {
   listenSerial();
   listenPins();
 }
-

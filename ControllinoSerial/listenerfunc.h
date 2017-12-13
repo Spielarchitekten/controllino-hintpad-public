@@ -1,15 +1,72 @@
 /*
    Serial and pin listener functions
    debounces button/trigger inputs
+
+   internal function call codes:
+   - 999: reset/report input pin states
+
 */
 
 #include <Arduino.h>
+
+
+
 boolean newData = false;
 int sArduPin, sPinValue, sPinDuration;  // stores incoming integers from serial connection
 char receivedChars[32];                 // stores the whole message coming from Hintpad
 int inMessage [] = { 0 , 0 , 0 };       // stores single values of a message coming from Hintpad
 String sendStrg;
 int btnCounter = 0;
+
+String typeOf(String a) {
+  String theStr = "string";
+  return theStr;
+}
+String typeOf(int a)   {
+  String theStr = "int";
+  return theStr;
+}
+String typeOf(char* a) {
+  String theStr = "char";
+  return theStr;
+}
+void reportInputs() {
+  for (int i = 0; i < iocount3; i++) {
+
+    inputVal[i] = digitalRead(inputA[i]);
+    String serString;
+    serString = "[A"; // default
+    serString += i;   // default
+
+    if (CMODL == 1) { // MINI
+      if (i == 6) serString = "[IN0";
+      if (i == 7) serString = "[IN1";
+    }
+
+    if (CMODL == 2) { // MAXI
+      if (i == 10) serString = "[IN0";
+      if (i == 11) serString = "[IN1";
+    }
+
+    if (CMODL == 3) { // MEGA
+      if (i >= 16 && i <= 18) {
+        serString = "[I";
+        serString += i;
+      }
+      if (i == 19) serString = "[IN0";
+      if (i == 20) serString = "[IN1";
+    }
+
+    if (inputVal[i] == HIGH ) {
+      // report HIGH
+      serString += ",1]";
+    } else {
+      // report LOW
+      serString += ",0]";
+    }
+    Serial.println(serString);
+  }
+}
 
 void showParsedData() {
   if (receivedChars[0] != 0) {
@@ -24,8 +81,16 @@ void parseData (int *theMessage) {
   // split the data into its parts using strtok
   char * strtokIndx; // this is used by strtok() as an index
   strtokIndx = strtok(receivedChars, ",");  // get the first part
+
   String tmpStrtok = String(strtokIndx);
-  if (tmpStrtok.indexOf("A") < 0) {
+
+  if (tmpStrtok.indexOf("RESET CONTROLLINO") >= 0) {
+    theMessage[0] = 999; // internal function call code for reset/report inputs
+    theMessage[1] = 0;
+    theMessage[2] = 0;
+    newData = false;
+    return;
+  } else if (tmpStrtok.indexOf("A") < 0) {
     sArduPin = atoi (strtokIndx);     // convert to int
   } else {
     // on the MINI, digital outputs D6 and D7 are mapped to A4 and A5
@@ -71,6 +136,16 @@ void listenSerial() {
         newData = true;
         parseData (&inMessage[0]);
 
+        //Serial.println (inMessage[0]);
+        if (inMessage[0] == 999) {
+          reportInputs();
+          inMessage[0] = 0;
+          inMessage[1] = 0;
+          inMessage[2] = 0;
+          clearData ();
+          return;
+        }
+
         // find output-pin in arrays
         int outputPin = inMessage[0];
         int outputType = 0; // 0=None[default], 1=Digital, 2=Relay
@@ -108,14 +183,14 @@ void listenPins () {
     String serString;
     serString = "[A"; // default
     serString += i;   // default
-    
+
     if (CMODL == 1) { // MINI
       if (i == 6) serString = "[IN0";
       if (i == 7) serString = "[IN1";
     }
-    
+
     if (CMODL == 2) { // MAXI
-      if (i == 10) serString = "[IN0";     
+      if (i == 10) serString = "[IN0";
       if (i == 11) serString = "[IN1";
     }
 
@@ -127,7 +202,7 @@ void listenPins () {
       if (i == 19) serString = "[IN0";
       if (i == 20) serString = "[IN1";
     }
-    
+
     inputVal[i] = digitalRead(inputA[i]);
 
     // ANALOG INPUT MAPPING
@@ -178,40 +253,7 @@ void listenPins () {
   }
 }
 
-void reportInputs() {
-  for (int i = 0; i < iocount3; i++) {
-    inputVal[i] = digitalRead(inputA[i]);
-    String serString;
-    serString = "[A"; // default
-    serString += i;   // default
 
-    if (CMODL == 1) { // MINI
-      if (i == 6) serString = "[IN0";
-      if (i == 7) serString = "[IN1";
-    }
 
-    if (CMODL == 2) { // MAXI
-      if (i == 10) serString = "[IN0";
-      if (i == 11) serString = "[IN1";
-    }
 
-    if (CMODL == 3) { // MEGA
-      if (i >= 16 && i <= 18) {
-        serString = "[I";
-        serString += i;
-      }
-      if (i == 19) serString = "[IN0";
-      if (i == 20) serString = "[IN1";
-    }
-
-    if (inputVal[i] == HIGH ) {
-      // report HIGH
-      serString += ",1]";
-    } else {
-      // report LOW
-      serString += ",0]";
-    }
-    Serial.println (serString);
-  }
-}
 
