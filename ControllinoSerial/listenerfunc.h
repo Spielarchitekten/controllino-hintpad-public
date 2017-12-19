@@ -9,8 +9,6 @@
 
 #include <Arduino.h>
 
-
-
 boolean newData = false;
 int sArduPin, sPinValue, sPinDuration;  // stores incoming integers from serial connection
 char receivedChars[32];                 // stores the whole message coming from Hintpad

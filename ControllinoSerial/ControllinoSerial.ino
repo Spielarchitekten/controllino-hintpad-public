@@ -15,19 +15,7 @@
   pin        the pin (native Arduino Mega) you want to switch
   value      0 = off, 1 = on
 
-  - NOTES -
-  MINI & A4/A5:
-  on the MINI analog inputs A4 and A5 are analog only!
-  In order to work with Hintpad the values have to be digital,
-  so A4 and A5 are mapped to digital values (see listenerfunc.h)
-
-  DEBOUNCE TIME:
-  The button debouncer prevents fluctuating inputs and waits 
-  for a stable signal before reporting it to Hintpad.
-  Choose a reasonable debounce time! Due to the nature of serial communication 
-  (only one way at a time, bit by bit) we need to be carefol not to 'spam' the 
-  serial port in one or the other direction, i.e. give each machine enough time to 
-  generate and send the answer to a request.
+  - NOTES - 
 
   I/O INFO:
   Prints i/o info to serial monitor enclosed in square brackets:
@@ -59,7 +47,7 @@ String currentVersion = "1.2.7";
 // 1 = MINI
 // 2 = MAXI
 // 3 = MEGA
-#define CMODL 3
+#define CMODL 2
 // ****************************** //
 
 #if CMODL == 1
