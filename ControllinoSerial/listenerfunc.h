@@ -30,8 +30,26 @@ String typeOf(char* a) {
 }
 void reportInputs() {
   for (int i = 0; i < iocount3; i++) {
-
+    
     inputVal[i] = digitalRead(inputA[i]);
+    
+
+    // ANALOG INPUT MAPPING
+    // when using MINI, read A4 and A5 (analog only!) again
+    // and convert them to digital HIGH/LOW values, using a threshold
+    if (CMODL == 1) {
+      if  (i >= 4 && i <= 5) {
+        int aInput  = analogRead (inputA[i]) ; // temporarily store the analog input value
+        int aThreshold = 700; // the HIGH/LOW treshold of the analog pin
+        if (aInput >= aThreshold) {
+          inputVal[i] = HIGH;
+        } else {
+          inputVal[i] = LOW;
+        }
+      }
+    }
+
+    
     String serString;
     serString = "[A"; // default
     serString += i;   // default
@@ -62,6 +80,8 @@ void reportInputs() {
       // report LOW
       serString += ",0]";
     }
+
+    
     Serial.println(serString);
   }
 }
@@ -108,7 +128,7 @@ void parseData (int *theMessage) {
 }
 
 void clearData () {
-  for ( int i = 0; i < sizeof(receivedChars);  ++i )
+  for ( unsigned int i = 0; i < sizeof(receivedChars);  ++i )
     receivedChars[i] = (char)0;
 }
 
@@ -148,7 +168,7 @@ void listenSerial() {
         int outputPin = inMessage[0];
         int outputType = 0; // 0=None[default], 1=Digital, 2=Relay
         int newValue = inMessage[1];
-        int posInArray;
+        int posInArray = 0;
 
         // try to find the pin in the relay pin list
         for (int i = 0; i < iocount2; i++) {
@@ -176,6 +196,10 @@ void listenSerial() {
 }
 
 void listenPins () {
+
+
+
+  
   // listen for inputs on A0 - AX and send event string via serial
   for (int i = 0; i < iocount3; i++) {
     String serString;
@@ -217,7 +241,7 @@ void listenPins () {
         }
       }
     }
-
+    
     // debounce inputs
     if (inputVal[i] == HIGH ) {
       if (doDebounce[i] == false && isSent[i] == false) {
@@ -250,8 +274,3 @@ void listenPins () {
     }
   }
 }
-
-
-
-
-

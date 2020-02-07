@@ -15,7 +15,7 @@
   pin        the pin (native Arduino Mega) you want to switch
   value      0 = off, 1 = on
 
-  - NOTES - 
+  - NOTES -
 
   I/O INFO:
   Prints i/o info to serial monitor enclosed in square brackets:
@@ -47,7 +47,7 @@ String currentVersion = "1.2.7";
 // 1 = MINI
 // 2 = MAXI
 // 3 = MEGA
-#define CMODL 2
+#define CMODL 1
 // ****************************** //
 
 #if CMODL == 1
@@ -56,11 +56,15 @@ String currentVersion = "1.2.7";
 const int iocount1 = 8;
 const int iocount2 = 6;
 const int iocount3 = 8;
-int outputD[] = {4, 5, 6, 7, 8, 9, A4, A5};
-int outputR[] = {4, 5, 6, 7, 8, 9};
+int outputD[] = {CONTROLLINO_D0, CONTROLLINO_D1, CONTROLLINO_D2, CONTROLLINO_D3,
+                 CONTROLLINO_D4, CONTROLLINO_D5, CONTROLLINO_D6, CONTROLLINO_D7
+                };
+
+int outputR[] = {CONTROLLINO_D0, CONTROLLINO_D1, CONTROLLINO_D2, CONTROLLINO_D3,
+                 CONTROLLINO_D4, CONTROLLINO_D5
+                };
 // inputs
-int inputA[] = {CONTROLLINO_A0, CONTROLLINO_A1, CONTROLLINO_A2, CONTROLLINO_A3, CONTROLLINO_A4,
-                CONTROLLINO_A5, CONTROLLINO_IN0, CONTROLLINO_IN1
+int inputA[] = {A0, A1, A2, A3, A6, A7, CONTROLLINO_IN0, CONTROLLINO_IN1
                };
 
 int inputVal[8]; // input values
@@ -90,7 +94,7 @@ boolean isSent[12]; // sent flags
 const int iocount1 = 24;
 const int iocount2 = 16;
 const int iocount3 = 21;
-int outputD[] = {2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 42, 43, 44, 45, 46, 47, 48, 49, 120,121,122,123};
+int outputD[] = {2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 42, 43, 44, 45, 46, 47, 48, 49, 120, 121, 122, 123};
 int outputR[] = {22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36, 37};
 // inputs
 int inputA[] = {CONTROLLINO_A0, CONTROLLINO_A1, CONTROLLINO_A2, CONTROLLINO_A3, CONTROLLINO_A4,
@@ -148,14 +152,14 @@ void setup() {
     pinMode (outputD[j], OUTPUT);
   }
 
-#if CMODL != 1  
-// PORT MANIPULATION FOR MEGA D20-D23
+#if CMODL != 1
+  // PORT MANIPULATION FOR MEGA D20-D23
   DDRD = DDRD | MEGA_PINS_20_23;  // set up pins 47 (D20), 48(D21), 49(D22) on PORTD
   DDRJ = DDRJ | MEGA_PINS_24;     // set up pin 67 (D23) on PORTJ
 #endif
 
-reportInputs(); // reporting input pin states on startup once
-
+  reportInputs(); // reporting input pin states on startup once
+  
 }
 
 void loop() {
