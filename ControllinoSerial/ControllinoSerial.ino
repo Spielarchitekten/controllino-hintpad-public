@@ -36,9 +36,10 @@
   - v1.2.6: - report input pins on startup
             - code cleanup
   - v1.2.7: - added 'report input' function
+  - v1.2.8: - fixed MINI A4-A5 startup pin report
 */
 
-String currentVersion = "1.2.7";
+String currentVersion = "1.2.8";
 
 #include <Controllino.h>
 
