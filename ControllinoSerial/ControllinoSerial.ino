@@ -2,7 +2,7 @@
   Main sketch for serial communication between
   Hintpad and Controllino MINI/MAXI/MEGA
 
-  gregor [at] pfeffermind.de
+  gregor.haase [at] paperdice.de
 
   -> Send serial data to the Controllino in order to switch pins/relays on and off
   -> Controllino reports HIGH and LOW reads from input pins to Hintpad via serial connection
